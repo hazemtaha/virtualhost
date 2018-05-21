@@ -34,13 +34,13 @@ $ chmod +x virtualhost-nginx
 Basic command line syntax:
 
 ```bash
-$ sudo sh /path/to/virtualhost.sh [create | delete] [domain] [optional host_dir]
+$ sudo sh /path/to/virtualhost.sh [create | delete] [domain] [host_dir] [ruby_version] [rails_env]
 ```
 
 With script installed on /usr/local/bin
 
 ```bash
-$ sudo virtualhost [create | delete] [domain] [optional host_dir]
+$ sudo virtualhost [create | delete] [domain] [host_dir] [ruby_version] [rails_env]
 ```
 
 ### Examples ###
