@@ -6,6 +6,8 @@ TEXTDOMAIN=virtualhost
 action=$1
 domain=$2
 rootDir=$3
+rubyVersion=$4
+railsEnv=$5
 owner=$(who am i | awk '{print $1}')
 apacheUser=$(ps -ef | egrep '(httpd|apache2|apache)' | grep -v root | head -n1 | awk '{print $1}')
 email='webmaster@localhost'
@@ -29,12 +31,23 @@ fi
 
 while [ "$domain" == "" ]
 do
-	echo -e $"Please provide domain. e.g.dev,staging"
+	echo -e $"Please provide domain. e.g. mysite.com"
 	read domain
 done
 
 if [ "$rootDir" == "" ]; then
-	rootDir=${domain//./}
+	echo -e $"Please provide root directory. e.g. /var/www/projectname"
+	read rootDir
+fi
+
+if [ "$rubyVersion" == "" ]; then
+	echo -e $"Please provide ruby version. e.g. 2.5.0"
+	read rubyVersion
+fi
+
+if [ "$railsEnv" == "" ]; then
+	echo -e $"Please provide rails environment. e.g. staging"
+	read railsEnv
 fi
 
 ### if root dir starts with '/', don't use /var/www as default starting point
@@ -75,16 +88,14 @@ if [ "$action" == 'create' ]
 			ServerName $domain
 			ServerAlias $domain
 			DocumentRoot $rootDir
-			<Directory />
-				AllowOverride All
-			</Directory>
 			<Directory $rootDir>
 				Options Indexes FollowSymLinks MultiViews
 				AllowOverride all
 				Require all granted
 			</Directory>
+			RailsEnv $railsEnv
+			PassengerRuby /home/$owner/.rvm/gems/ruby-$rubyVersion/wrappers/ruby
 			ErrorLog /var/log/apache2/$domain-error.log
-			LogLevel error
 			CustomLog /var/log/apache2/$domain-access.log combined
 		</VirtualHost>" > $sitesAvailabledomain
 		then
